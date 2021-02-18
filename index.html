@@ -1,52 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>d3.js data driven page</title>
-        <script src="https://d3js.org/d3.v6.min.js"></script>
-    </head>
+<head>
+	<title>Homwework 2 - Part 2</title>
+</head>
 
-    <body>
-        <p>
-            <button onclick="colorP()">Click me</button>
-            <table></table>
+<body>
 
-                <label for="data">Choose a dataset:</label>
-                <select name="dataset" id="dataset">
-                  <option value="data1.csv">Data 1</option>
-                  <option value="data2.csv">Data 2</option>
-                </select>
-                <br><br>
-                <button onclick="dataset()" value="Submit">Select</button>
+<p></p>
 
-        </p>
+Homwework 2 - Part 2
 
-        <script>
-            csv_url = false ? "data1.csv" : "https://raw.githubusercontent.com/xavier414/d3js-dynamic-HTML-table-part-2/master/data1.csv"
-            d3.csv(csv_url,
-            (d,i,c) => {
-                if (i>10) return d
-                d3.select("table")
-                .append("tr")
-                .selectAll("td")
-                .data(c).enter()
-                .append("td").text(e => d[e])
-            })
+<p></p>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
 
 
-            csv_url = false ? "data2.csv" : "https://raw.githubusercontent.com/xavier414/d3js-dynamic-HTML-table-part-2/master/data2.csv"
-            d3.csv(csv_url,
-            (d,i,c) => {
-                if (i>10) return d
-                d3.select("table")
-                .append("tr")
-                .selectAll("td")
-                .data(c).enter()
-                .append("td").text(e => d[e])
-            })
+<select id="change" onchange="change()">
+	<option value="https://raw.githubusercontent.com/xavier414/d3js-dynamic-HTML-table-part-2/master/data1.csv">Data 1</option>
+	<option value="https://raw.githubusercontent.com/xavier414/d3js-dynamic-HTML-table-part-2/master/data2.csv">Data 2</option>
+</select>
 
-            function colorP() {
-                d3.selectAll("p").style("color", "red");
-            }
-        </script>
-    </body>
+<div id="content"></div>
+
+<script>
+
+
+	function change() {
+		
+		var csv_url = document.getElementById("change").value;
+
+		document.getElementById("content").innerHTML = "";
+
+		d3.csv(csv_url).then(function(data) {
+
+			function createtable(data, columns) {
+			    var table = d3.select("#content").append("table")
+			        thead = table.append("thead"),
+			        tbody = table.append("tbody");
+
+                var rows = tbody.selectAll("tr")
+			        .data(data)
+			        .enter()
+			        .append("tr");
+
+			    thead.append("tr")
+			        .selectAll("th")
+			        .data(columns)
+			        .enter()
+			        .append("th")
+			            .text(function(column) { return column; });
+			   
+			    var cells = rows.selectAll("td")
+			        .data(function(row) {
+			            return columns.map(function(column) {
+			                return {column: column, value: row[column]};
+			            });
+			        })
+			        .enter()
+			        .append("td")
+			            .html(function(d) { return d.value; });
+			    
+			    return table;
+			}
+		 	var columns = Object.keys(data[0]);
+		 	var Table = createtable(data, columns);
+		});
+	}
+</script>
+</body>
 </html>
