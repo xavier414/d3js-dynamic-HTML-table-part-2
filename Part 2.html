@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+    <body>
+        
+        <div id="dataSelector"></div>   
+        <table>
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+
+        <script>
+         csv_url = false ? "category-brands.csv" : "https://raw.githubusercontent.com/xavier414/Class-2-Example/main/category-brands.csv",
+
+            function dataSelector(d) {
+            d3.select("#dataSelector")
+            .append("select")
+            .on("change", d=> updateSelect(d))
+            .selectAll("option")
+            .data(d).enter()
+            .append("option")
+            .text(e => e.slice(0,4))
+            .attr("value", e => e)
+        }
+        </script>
+    
+       
+
+
+
+
+
+
+
+
+    </html>
